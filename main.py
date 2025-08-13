@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 # Cogs
-import cogs.Greetings
 from os import listdir
 
 ## Logging Modules

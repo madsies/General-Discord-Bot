@@ -22,8 +22,8 @@ class Greetings(commands.Cog):
         embed.set_author(name=util.CONFIG_DATA['author_tag'])
         embed.set_footer(text=util.CONFIG_DATA['footer_text'], icon_url=util.CONFIG_DATA['owner_pfp'])
         embed.set_thumbnail(url=member.avatar)
+        embed.add_field(name=f"You are member number **{member.guild.member_count}**")
         await welcome_channel.send(embed=embed);
-
         if welcome_channel is not None:
             await welcome_channel.send(embed=embed);
     
