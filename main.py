@@ -18,9 +18,11 @@ load_dotenv()
 class MyBot(commands.Bot):
     async def on_ready(self):
         print(f"[{datetime.now().strftime('%H:%M:%S')}] Logged on as {self.user}")
+        return await super().on_ready()
 
     async def on_message(self, message):
         print(f"[{datetime.now().strftime('%H:%M:%S')}] Message by {message.author}: {message.content}")
+        return await super().on_message(message) # I'm an idiot and forgot to add this from original class.....
 
     async def load_extension(self, name, *, package = None):
         return await super().load_extension(name, package=package)
@@ -39,9 +41,10 @@ def main():
     INTENTS = discord.Intents.default()
     INTENTS.message_content = True
 
-    client = MyBot(command_prefix='>', intents=INTENTS)
+    client = MyBot(command_prefix='!', intents=INTENTS)
     
     client.run(os.environ.get('DISCORD_BOT_TOKEN'), log_handler=handler)
+    
 
 if __name__ == "__main__":
     main()

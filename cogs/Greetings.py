@@ -12,13 +12,10 @@ class Greetings(commands.Cog):
         if welcome_channel is not None:
             await welcome_channel.send(f'GRRRRRReetings {member.mention}!!')
 
-    @commands.command()
+    @commands.command(name="hello")
     async def hello(self, ctx, *, member: discord.Member = None):
         member = member or ctx.author
-        print("test")
-        #if self._last_member is None or self._last_member.id != member.id:
         await ctx.send(f'GRRRRReeeeetings {member.name}~')
-        #self._last_member = member 
 
 
 async def setup(bot: commands.Bot) -> None:

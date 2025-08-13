@@ -1,12 +1,10 @@
-[2025-08-13 19:44:37] [INFO    ] discord.client: logging in using static token
-[2025-08-13 19:44:38] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 2ef0f21c808a036d3d8b7d9c37a8c136).
-[2025-08-13 19:45:56] [ERROR   ] discord.app_commands.tree: Ignoring exception in command tree
+[2025-08-13 20:40:24] [INFO    ] discord.client: logging in using static token
+[2025-08-13 20:40:25] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 95756ac9dfb196ea28029b8ed624fc0d).
+[2025-08-13 20:40:27] [ERROR   ] discord.client: Ignoring exception in on_ready
 Traceback (most recent call last):
-  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\app_commands\tree.py", line 1151, in wrapper
-    await self._call(interaction)
-  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\app_commands\tree.py", line 1283, in _call
-    command, options = self._get_app_command_options(data)
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\app_commands\tree.py", line 1187, in _get_app_command_options
-    raise CommandNotFound(name, parents)
-discord.app_commands.errors.CommandNotFound: Application command 'yukari' not found
+  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\client.py", line 481, in _run_event
+    await coro(*args, **kwargs)
+  File "c:\Users\maddie\Documents\Programming\Personal\Python\ResumeBot\main.py", line 21, in on_ready
+    return await super().on_ready()
+                 ^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'on_ready'
