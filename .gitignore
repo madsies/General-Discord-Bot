@@ -1,5 +1,5 @@
 .env
-discord.log
+*.log
 __pycache__/
 *.py[cod]
 *$py.class
