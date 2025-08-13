@@ -2,7 +2,7 @@
 import discord
 from discord.ext import commands
 
-#Cogs
+# Cogs
 import cogs.Greetings
 from os import listdir
 
