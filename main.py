@@ -32,6 +32,8 @@ class MyBot(commands.Bot):
             if cog.endswith('.py') == True:
                 print(f"LOADING: cogs.{cog[:-3]}")
                 await self.load_extension(f'cogs.{cog[:-3]}')
+                
+        await self.tree.sync() # Updates Slash Commands
         return await super().setup_hook()    
 
 

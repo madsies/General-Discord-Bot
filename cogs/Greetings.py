@@ -12,10 +12,12 @@ class Greetings(commands.Cog):
         if welcome_channel is not None:
             await welcome_channel.send(f'GRRRRRReetings {member.mention}!!')
 
-    @commands.command(name="hello")
+    @commands.hybrid_command(name="hello", description="Greetings Message")
     async def hello(self, ctx, *, member: discord.Member = None):
         member = member or ctx.author
         await ctx.send(f'GRRRRReeeeetings {member.name}~')
+
+
 
 
 async def setup(bot: commands.Bot) -> None:
