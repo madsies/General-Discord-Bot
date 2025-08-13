@@ -1,2 +1,12 @@
 [2025-08-13 19:44:37] [INFO    ] discord.client: logging in using static token
 [2025-08-13 19:44:38] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 2ef0f21c808a036d3d8b7d9c37a8c136).
+[2025-08-13 19:45:56] [ERROR   ] discord.app_commands.tree: Ignoring exception in command tree
+Traceback (most recent call last):
+  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\app_commands\tree.py", line 1151, in wrapper
+    await self._call(interaction)
+  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\app_commands\tree.py", line 1283, in _call
+    command, options = self._get_app_command_options(data)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\app_commands\tree.py", line 1187, in _get_app_command_options
+    raise CommandNotFound(name, parents)
+discord.app_commands.errors.CommandNotFound: Application command 'yukari' not found
