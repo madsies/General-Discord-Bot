@@ -4,6 +4,7 @@ from discord.ext import commands
 
 # Cogs
 from os import listdir
+import util
 
 ## Logging Modules
 import logging
@@ -41,6 +42,10 @@ def main():
 
     INTENTS = discord.Intents.default()
     INTENTS.message_content = True
+
+    util.create_database("localhost", "root", os.environ.get('MYSQL_PASS'), "CREATE DATABASE YukariDatabase")
+    
+    con = util.create_connection("localhost", "root", os.environ.get('MYSQL_PASS'),"YukariDatabase")
 
     client = MyBot(command_prefix='!', intents=INTENTS)
     
