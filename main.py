@@ -21,7 +21,7 @@ class MyBot(commands.Bot):
 
         for guild in self.guilds:
             for user in guild.members:
-                if (user != self):
+                if (not user.bot):
                     util.DATABASE_REF.add_user(user);
         return await super().on_ready()
 

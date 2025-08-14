@@ -51,8 +51,6 @@ class Leaderboard(commands.Cog):
             embed = discord.Embed(title=f"{guild.name} Time Joined Leaderboard", color=int(util.CONFIG_DATA['embed_neuteral_color'], 16), description=lbText)
 
             
-
-        
         embed.set_author(name=util.CONFIG_DATA['author_tag'])
         embed.set_footer(text=util.CONFIG_DATA['footer_text'], icon_url=util.CONFIG_DATA['owner_pfp'])
 

@@ -38,6 +38,9 @@ class ServerStats(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message : discord.Message):
         user = message.author
+
+        if (user.bot): return # Dont track Bot stats
+
         # Check user exists in DB
         util.DATABASE_REF.add_user(user);
 
