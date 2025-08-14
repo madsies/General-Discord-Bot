@@ -22,11 +22,7 @@ class MyBot(commands.Bot):
         for guild in self.guilds:
             for user in guild.members:
                 if (user != self):
-                    ID = user.id
-                    username = user.name
-                    sql = """INSERT IGNORE INTO users (id, username, messages) VALUES (%s, %s, 0);"""
-                    vals = (ID, username)
-                    util.DATABASE_REF.queryTuple(sql, vals)
+                    util.DATABASE_REF.add_user(user);
         return await super().on_ready()
 
     async def on_message(self, message):
@@ -64,7 +60,6 @@ def main():
     
     client.run(os.environ.get('DISCORD_BOT_TOKEN'), log_handler=handler)
 
-    
     
 
 if __name__ == "__main__":

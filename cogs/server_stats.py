@@ -33,7 +33,18 @@ class ServerStats(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message : discord.Message):
         user = message.author
-        #util.DATABASE_REF.query("""INSERT INTO Users (messages) VALUES""")
+        # Check user exists in DB
+        util.DATABASE_REF.add_user(user);
+
+        # Fetch Message count from DB
+        sql = """SELECT messages FROM users WHERE id = %s"""
+        val = [user.id]
+        messages = util.DATABASE_REF.queryTuple(sql, val)
+
+        # Write Updated Message Count back to db
+        sql = """UPDATE users SET messages = %s WHERE id = %s"""
+        val = (messages[0][0]+1, user.id)
+        util.DATABASE_REF.queryTuple(sql, val)
 
 
 

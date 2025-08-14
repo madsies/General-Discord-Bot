@@ -53,10 +53,19 @@ class MySQLDatabase():
         cursor.close()
         self.connection.commit()
 
+    def add_user(self, user):
+        ID = user.id
+        username = user.name
+        sql = """INSERT IGNORE INTO users (id, username, messages) VALUES (%s, %s, 0);"""
+        vals = (ID, username)
+        self.queryTuple(sql, vals)
+
     def queryTuple(self, sql, val):
         cursor = self.connection.cursor()
         cursor.execute(sql, val)
+        data = cursor.fetchall()
         cursor.close()
         self.connection.commit()
+        return data
 
 DATABASE_REF = MySQLDatabase("localhost", "root", os.environ.get('MYSQL_PASS'))
