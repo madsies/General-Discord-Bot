@@ -47,6 +47,7 @@ def main():
 
     INTENTS = discord.Intents.default()
     INTENTS.message_content = True
+    INTENTS.members = True
 
     #util.DATABASE_REF.query("""DROP TABLE users;""")
 
