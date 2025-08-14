@@ -30,30 +30,46 @@ class MyView(discord.ui.View):
         self.remove_item(self.arrow_forward)
         self.remove_item(self.arrow_backward)
 
-        self.arrow_backward = discord.ui.Button(label=':arrow_backward:', style=discord.ButtonStyle.blurple, disabled=not self._backward)
+        self.arrow_backward = discord.ui.Button(label='◀️', style=discord.ButtonStyle.blurple, disabled=not self._backward)
         self.arrow_backward.callback = self.on_arrow_backward_click
         self.add_item(self.arrow_backward)
 
-        self.arrow_forward = discord.ui.Button(label=':arrow_forward:', style=discord.ButtonStyle.blurple, disabled=not self._forward)
+        self.arrow_forward = discord.ui.Button(label='▶️', style=discord.ButtonStyle.blurple, disabled=not self._forward)
         self.arrow_forward.callback = self.on_arrow_forward_click
         self.add_item(self.arrow_forward)
+
+
+    def leaderboardFormatter(self, data):
+        i : int = 1 + (self._index*10)
+        lbText = ""
+        if self._type == "messages":
+            for userTuple in data:
+                if (userTuple[0] == self._user.name): 
+                    lbText = lbText + f"{i}. **{userTuple[0]}**: {userTuple[1]} Messages **<-**\n"
+                else:
+                    lbText = lbText + f"{i}. {userTuple[0]}: {userTuple[1]} Messages\n"
+            newEmbed = discord.Embed(title=f"{self._user.guild.name} Messages Leaderboard ({self._index+1}/{self._pages})", color=int(util.CONFIG_DATA['embed_neuteral_color'], 16), description=lbText)
+        else:
+            for userTuple in data:
+                if (userTuple[0] == self._user.name): 
+                    lbText = lbText + f"{i}. **{userTuple[0]}**: Joined at {userTuple[1].strftime('%d/%m/%Y %H:%M:%S')} **<-**\n"
+                else:
+                    lbText = lbText + f"{i}. {userTuple[0]}: Joined at {userTuple[1].strftime('%d/%m/%Y %H:%M:%S')}\n"
+            newEmbed = discord.Embed(title=f"{self._user.guild.name} Time Joined Leaderboard ({self._index+1}/{self._pages})", color=int(util.CONFIG_DATA['embed_neuteral_color'], 16), description=lbText)
+
+        
+        newEmbed.set_author(name=self._embed.author.name)
+        newEmbed.set_footer(text=self._embed.footer.text, icon_url=self._embed.footer.icon_url)
+        return newEmbed
+
 
     async def on_arrow_backward_click(self, interaction: discord.Interaction):
 
         self._index = self._index - 1
         if (self._index == 0):self._backward = False
         data = self._data[self._index*10:(self._index*10)+10]
-        i : int = 1 + (self._index*10)
-        lbText = ""
-        for userTuple in data:
-            if (userTuple[0] == self._user.name): 
-                lbText = lbText + f"{i}. **{userTuple[0]}**: {userTuple[1]} Messages **<-**\n"
-            else:
-                lbText = lbText + f"{i}. {userTuple[0]}: {userTuple[1]} Messages\n"
 
-        newEmbed = discord.Embed(title=f"{self._user.guild.name} Messages Leaderboard ({self._index+1}/{self._pages})", color=int(util.CONFIG_DATA['embed_neuteral_color'], 16), description=lbText)
-        newEmbed.set_author(name=self._embed.author.name)
-        newEmbed.set_footer(text=self._embed.footer.text, icon_url=self._embed.footer.icon_url)
+        newEmbed = self.leaderboardFormatter(data)
         self._embed = newEmbed
         self._forward = True
         self.refreshButtons()
@@ -67,17 +83,8 @@ class MyView(discord.ui.View):
             self._forward = False
         else:
             data = self._data[self._index*10:(self._index*10)+10]
-        i : int = 1 + (self._index*10)
-        lbText = ""
-        for userTuple in data:
-            if (userTuple[0] == self._user.name): 
-                lbText = lbText + f"{i}. **{userTuple[0]}**: {userTuple[1]} Messages **<-**\n"
-            else:
-                lbText = lbText + f"{i}. {userTuple[0]}: {userTuple[1]} Messages\n"
 
-        newEmbed = discord.Embed(title=f"{self._user.guild.name} Messages Leaderboard ({self._index+1}/{self._pages})", color=int(util.CONFIG_DATA['embed_neuteral_color'], 16), description=lbText)
-        newEmbed.set_author(name=self._embed.author.name)
-        newEmbed.set_footer(text=self._embed.footer.text, icon_url=self._embed.footer.icon_url)
+        newEmbed = self.leaderboardFormatter(data)
         self._embed = newEmbed
         self._backward = True
         self.refreshButtons()
@@ -129,7 +136,7 @@ class Leaderboard(commands.Cog):
                 
             i : int = 1
             lbText : str = ""
-            fulldata = sorted(messages, key=lambda x:x[1], reverse=True)
+            fulldata = sorted(data, key=lambda x:x[1])
             data = fulldata[:10]
             pages : int = ceil(len(fulldata) / 10)
             for userTuple in sorted(data, key=lambda x:x[1])[:10]:
