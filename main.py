@@ -18,6 +18,15 @@ load_dotenv()
 class MyBot(commands.Bot):
     async def on_ready(self):
         print(f"[{datetime.now().strftime('%H:%M:%S')}] Logged on as {self.user}")
+
+        for guild in self.guilds:
+            for user in guild.members:
+                if (user != self):
+                    ID = user.id
+                    username = user.name
+                    sql = """INSERT IGNORE INTO users (id, username, messages) VALUES (%s, %s, 0);"""
+                    vals = (ID, username)
+                    util.DATABASE_REF.queryTuple(sql, vals)
         return await super().on_ready()
 
     async def on_message(self, message):
@@ -43,13 +52,19 @@ def main():
     INTENTS = discord.Intents.default()
     INTENTS.message_content = True
 
-    util.create_database("localhost", "root", os.environ.get('MYSQL_PASS'), "CREATE DATABASE YukariDatabase")
-    
-    con = util.create_connection("localhost", "root", os.environ.get('MYSQL_PASS'),"YukariDatabase")
+    #util.DATABASE_REF.query("""DROP TABLE users;""")
+
+    util.DATABASE_REF.query("""CREATE TABLE IF NOT EXISTS users (
+                   id BIGINT,
+                   username varchar(32),
+                   messages integer,
+                   PRIMARY KEY (id));""")
 
     client = MyBot(command_prefix='!', intents=INTENTS)
     
     client.run(os.environ.get('DISCORD_BOT_TOKEN'), log_handler=handler)
+
+    
     
 
 if __name__ == "__main__":

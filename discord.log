@@ -1,10 +1,10 @@
-[2025-08-13 23:39:09] [INFO    ] discord.client: logging in using static token
-[2025-08-13 23:39:10] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 61cb4da239d208ecbb267108a35e5db2).
-[2025-08-13 23:39:12] [ERROR   ] discord.client: Ignoring exception in on_ready
+[2025-08-14 01:39:04] [INFO    ] discord.client: logging in using static token
+[2025-08-14 01:39:05] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 2a8fd2eef89a74fea303cde53f1e902f).
+[2025-08-14 01:39:07] [ERROR   ] discord.client: Ignoring exception in on_ready
 Traceback (most recent call last):
   File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\client.py", line 481, in _run_event
     await coro(*args, **kwargs)
-  File "c:\Users\maddie\Documents\Programming\Personal\Python\ResumeBot\main.py", line 21, in on_ready
+  File "c:\Users\maddie\Documents\Programming\Personal\Python\ResumeBot\main.py", line 31, in on_ready
     return await super().on_ready()
                  ^^^^^^^^^^^^^^^^
 AttributeError: 'super' object has no attribute 'on_ready'

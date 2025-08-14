@@ -30,6 +30,12 @@ class ServerStats(commands.Cog):
         await ctx.send(embed=embed)
 
 
+    @commands.Cog.listener()
+    async def on_message(self, message : discord.Message):
+        user = message.author
+        #util.DATABASE_REF.query("""INSERT INTO Users (messages) VALUES""")
+
+
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(ServerStats(bot))

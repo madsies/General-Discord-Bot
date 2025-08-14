@@ -2,36 +2,61 @@ import json
 import mysql.connector
 from mysql.connector import Error
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 with open(Path(__file__).parent / "resources/data.json", "r", encoding="utf-8") as f:
     CONFIG_DATA = json.load(f)
 
+class MySQLDatabase():
+    def __init__(self, host_name : str, user_name : str, user_password : str):
+        self._db_name : str = "YukariDatabase"
+        self._host_name : str = host_name
+        self._user_name : str = user_name
+        self._user_password : str = user_password
+        self.create_database()
+        self.connection = self.create_connection()
 
-def create_connection(host_name : str, user_name : str, user_password : str, db_name):
-    connection = None
-    try:
-        connection = mysql.connector.connect(
-            host=host_name,
-            user=user_name,
-            passwd=user_password,
-            database=db_name
-        )
-        print("Connection to MySQL DB successful")
-    except Error as e:
-        print(f"The error '{e}' occurred")
+    def create_connection(self):
+        connection = None
+        try:
+            connection = mysql.connector.connect(
+                host=self._host_name,
+                user=self._user_name,
+                passwd=self._user_password,
+                database=self._db_name
+            )
+            print("Connection to MySQL DB successful")
+        except Error as e:
+            print(f"The error '{e}' occurred")
 
-    return connection
+        return connection
 
-def create_database(host_name : str, user_name : str, user_password,  query):
-    
-    try:
-        connection = mysql.connector.connect(
-            host=host_name,
-            user=user_name,
-            passwd=user_password,
-        )
-        cursor = connection.cursor()
+    def create_database(self):
+        
+        try:
+            connection = mysql.connector.connect(
+                host=self._host_name,
+                user=self._user_name,
+                passwd=self._user_password,
+            )
+            cursor = connection.cursor()
+            cursor.execute("CREATE DATABASE YukariDatabase")
+            print("Database created successfully")
+        except Error as e:
+            print(f"The error '{e}' occurred")
+
+    def query(self, query : str):
+        cursor = self.connection.cursor()
         cursor.execute(query)
-        print("Database created successfully")
-    except Error as e:
-        print(f"The error '{e}' occurred")
+        cursor.close()
+        self.connection.commit()
+
+    def queryTuple(self, sql, val):
+        cursor = self.connection.cursor()
+        cursor.execute(sql, val)
+        cursor.close()
+        self.connection.commit()
+
+DATABASE_REF = MySQLDatabase("localhost", "root", os.environ.get('MYSQL_PASS'))
