@@ -91,7 +91,6 @@ class MyView(discord.ui.View):
 
         await interaction.response.edit_message(embed=newEmbed, view=self)
 
-
 class Leaderboard(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
