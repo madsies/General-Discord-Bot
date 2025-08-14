@@ -50,8 +50,10 @@ class MySQLDatabase():
     def query(self, query : str):
         cursor = self.connection.cursor()
         cursor.execute(query)
+        data = cursor.fetchall()
         cursor.close()
         self.connection.commit()
+        return data
 
     def add_user(self, user):
         ID = user.id

@@ -29,6 +29,11 @@ class ServerStats(commands.Cog):
         embed.add_field(name=f"Number of Channels:", value=f"{len(guild.text_channels)+ len(guild.voice_channels)}", inline=False) 
         await ctx.send(embed=embed)
 
+    """
+    
+        Tracking User Messages
+
+    """
 
     @commands.Cog.listener()
     async def on_message(self, message : discord.Message):
