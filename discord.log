@@ -1,1 +1,39 @@
 [2025-08-14 19:02:53] [INFO    ] discord.client: logging in using static token
+[2025-08-14 19:02:55] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: b581b103c473910222531ee45d3b354a).
+[2025-08-14 19:02:57] [ERROR   ] discord.client: Ignoring exception in on_ready
+Traceback (most recent call last):
+  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\client.py", line 481, in _run_event
+    await coro(*args, **kwargs)
+  File "c:\Users\maddie\Documents\Programming\Personal\Python\ResumeBot\main.py", line 26, in on_ready
+    return await super().on_ready()
+                 ^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'on_ready'
+[2025-08-14 19:07:49] [ERROR   ] discord.ext.commands.bot: Ignoring exception in command leaderboard
+Traceback (most recent call last):
+  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\app_commands\commands.py", line 857, in _do_call
+    return await self._callback(self.binding, interaction, **params)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\maddie\Documents\Programming\Personal\Python\ResumeBot\cogs\leaderboard.py", line 128, in leaderboard
+    pages : int = ceil(len(fulldata) / 10)
+                      ^^^^^^^^
+UnboundLocalError: cannot access local variable 'messages' where it is not associated with a value
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\ext\commands\hybrid.py", line 450, in _invoke_with_namespace
+    value = await self._do_call(ctx, ctx.kwargs)  # type: ignore
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\app_commands\commands.py", line 876, in _do_call
+    raise CommandInvokeError(self, e) from e
+discord.app_commands.errors.CommandInvokeError: Command 'leaderboard' raised an exception: UnboundLocalError: cannot access local variable 'messages' where it is not associated with a value
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\ext\commands\hybrid.py", line 450, in _invoke_with_namespace
+    value = await self._do_call(ctx, ctx.kwargs)  # type: ignore
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\maddie\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\discord\app_commands\commands.py", line 876, in _do_call
+    raise CommandInvokeError(self, e) from e
+discord.ext.commands.errors.HybridCommandError: Hybrid command raised an error: Command 'leaderboard' raised an exception: UnboundLocalError: cannot access local variable 'messages' where it is not associated with a value

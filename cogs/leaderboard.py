@@ -4,6 +4,12 @@ from typing import Literal
 from discord.ext import commands
 import util
 
+"""
+
+    This code is very messy right now, sorry future maddie ...
+
+"""
+
 class MyView(discord.ui.View):
     def __init__(self, forward : bool, backward : bool, embed : discord.Embed, data : list, index : int, type:str, user:discord.Member):
         super().__init__()
