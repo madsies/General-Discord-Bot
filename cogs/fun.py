@@ -2,6 +2,7 @@ import random
 import discord
 from typing import Literal, Optional
 from discord.ext import commands
+import requests
 
 """
 
@@ -38,7 +39,29 @@ class FunCommands(commands.Cog):
         
         if (silent == "True"):  await ctx.send(f"{sender.mention} Poked {user.display_name}!")
         else: await ctx.send(f"{sender.mention} Poked {user.mention}!")
-            
+
+    @commands.hybrid_group(name="dog", description="Sends Dog pictures")
+    async def dog(self, ctx):
+        await ctx.send("Please specify 'dog breed' or 'random'.")
+
+    @dog.command(name= "random", description="Returns a random dog image")
+    async def dog_random(self, ctx):
+        reply = requests.get("https://dog.ceo/api/breeds/image/random")
+        if reply.json()["status"] != "success":
+            await ctx.send("There is an issue with the dog api :(")
+            return
+        url = reply.json()["message"]
+        await ctx.send(url)
+
+    @dog.command(name="choose", description="Choose the breed of dog in the image")
+    async def dog_choose(self, ctx, breed : Literal["akita","boxer", "beagle", "collie/border", "dalmation", "doberman", "husky", "labrador", "bernese", "pug", "retriever/golden", "spaniel/cocker"]):
+        reply = requests.get(f"https://dog.ceo/api/breed/{breed}/images/random")
+        if reply.json()["status"] != "success":
+            await ctx.send("There is an issue with the dog api :(")
+            return
+        url = reply.json()["message"]
+        await ctx.send(url)
+
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(FunCommands(bot))

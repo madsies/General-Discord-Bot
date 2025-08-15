@@ -28,29 +28,34 @@ class Weather(commands.Cog):
         directions = ['North', 'North-East', 'East', 'South-East', 'South', 'South-West', 'West', 'North-West']
         idx = round(deg / 45) % 8
         return directions[idx]
-
-
-    @commands.hybrid_command(name="weather", description="Command for weather")
-    async def weather(self, ctx, *, city : str, country : str = None):
-        member : discord.Member = ctx.author
-        
+    
+    async def verify_location(self, city: str, country : str, ctx):
         if (city == None): await ctx.reply("This command requires a city/town name.")
         if (country == None): country = ""
-
-        print(country)
 
         http_reply = requests.get(f"http://api.openweathermap.org/geo/1.0/direct?q={city},,{country}&limit={1}&appid={os.environ.get('WEATHER_API_KEY')}")
 
         if (http_reply.status_code != 200):
             await ctx.send(f'There has been an error with the API.')
-            return
+            return None
 
         if (len(http_reply.content) < 10):
             await ctx.send(f"Location not found, Make sure the country code is valid, i.e. GB, US, DE")
-            return
+            return None
         
         locData = http_reply.json()[0]
-        latlong = (locData['lat'], locData['lon'])
+        return  (locData['lat'], locData['lon'])
+
+
+
+    @commands.hybrid_group(name="weather", description="Command for weather")
+    async def weather(self, ctx):
+        await ctx.send("Please specify more..")
+
+    @weather.command("current", description="Get the current weather")
+    async def current_weather(self, ctx, *, city : str, country : str = None):
+        latlong = await self.verify_location(city, country, ctx)
+        if latlong == None: return # Guard Clause, if fail
 
         weather_reply = requests.get(f"https://api.openweathermap.org/data/2.5/weather?lat={latlong[0]}&lon={latlong[1]}&appid={os.environ.get('WEATHER_API_KEY')}")
         weather_data = weather_reply.json()
@@ -71,7 +76,23 @@ class Weather(commands.Cog):
 
         await ctx.send(embed=embed)
 
-        
+    @weather.command("hourly", description="Get the 3 hourly weather forecast")
+    async def hourly_weather(self, ctx, *, city:str, country:str = None):
+        latlong = await self.verify_location(city, country, ctx)
+        if latlong == None: return # Guard Clause, if fail
+
+        weather_reply = requests.get(f"https://api.openweathermap.org/data/2.5/forecast?lat={latlong[0]}&lon={latlong[1]}&appid={os.environ.get('WEATHER_API_KEY')}")
+        nameData = (weather_reply.json()["city"]["name"], weather_reply.json()["city"]["country"])
+        weather_data = weather_reply.json()["list"][0:4]
+
+        print(weather_data)
+        embed : discord.Embed = discord.Embed(title=f"Weather for {nameData[0]}, {nameData[1]}")
+
+        embed.set_author(name=util.CONFIG_DATA['author_tag'])
+        embed.set_footer(text=util.CONFIG_DATA['footer_text'], icon_url=util.CONFIG_DATA['owner_pfp'])
+        await ctx.send(embed=embed)
+
+
 
 
 
