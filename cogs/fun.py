@@ -25,9 +25,10 @@ class FunCommands(commands.Cog):
         sender : discord.Member = ctx.author
         if (user == sender): 
             await ctx.send(f"{sender.mention} tried to poke themselves...")
-            await sender.send(f"Why are you poking yourself...")
-        if (silent == "True"):  await ctx.send(f"{sender.mention} Poked {user.display_name}!")
-        else: await ctx.send(f"{sender.mention} Poked {user.mention}!")
+            await sender.send(f"Why are you poking yourself...")#
+        else:
+            if (silent == "True"):  await ctx.send(f"{sender.mention} Poked {user.display_name}!")
+            else: await ctx.send(f"{sender.mention} Poked {user.mention}!")
 
     @poke.command(name="random")
     async def poke_random(self, ctx, silent: Literal["True", "False"] = "True"):
