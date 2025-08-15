@@ -1,9 +1,9 @@
-from pathlib import Path
-from typing import Literal, Tuple
+
 import discord
 from discord.ext import commands
 import requests
 import json
+import util
 
 import os
 from dotenv import load_dotenv
@@ -24,6 +24,11 @@ class Weather(commands.Cog):
     def kelvin_to_celcius(self, temp : int):
         return round(temp - 273.15,2)
     
+    def get_dir(self, deg : int):
+        directions = ['North', 'North-East', 'East', 'South-East', 'South', 'South-West', 'West', 'North-West']
+        idx = round(deg / 45) % 8
+        return directions[idx]
+
 
     @commands.hybrid_command(name="weather", description="Command for weather")
     async def weather(self, ctx, *, city : str, country : str = None):
@@ -54,8 +59,15 @@ class Weather(commands.Cog):
 
         embed : discord.Embed = discord.Embed(title=f"Weather for {nameData[0]}, {nameData[1]}")
         embed.set_thumbnail(url=f"https://openweathermap.org/img/wn/{weather_data['weather'][0]['icon']}@2x.png")
-        embed.add_field(name=weather_data["weather"][0]["main"], value=weather_data["weather"][0]["description"])
-        embed.add_field(name="Current Temperature", value=f"Actual: {self.kelvin_to_celcius(weather_data['main']['temp'])} °C\n Feels Like: {self.kelvin_to_celcius(weather_data['main']['feels_like'])}°C", inline=False)
+        embed.add_field(name=weather_data["weather"][0]["main"], value=weather_data["weather"][0]["description"], inline=False)
+        embed.add_field(name="Current Temperature", value=f"Actual: {self.kelvin_to_celcius(weather_data['main']['temp'])} °C\n Feels Like: {self.kelvin_to_celcius(weather_data['main']['feels_like'])} °C")
+        embed.add_field(name="High and Lows", value=f"Minimum: {self.kelvin_to_celcius(weather_data['main']['temp_min'])} °C\nMaximum: {self.kelvin_to_celcius(weather_data['main']['temp_max'])} °C")
+        embed.add_field(name="Humidity :droplet:", value=f"{weather_data['main']['humidity']}%", inline=False)
+        embed.add_field(name="Wind",value=f"Speed: {weather_data['wind']['speed']}m/s\nDir: {weather_data['wind']['deg']}° ({self.get_dir(weather_data['wind']['deg'])})", inline=True)
+
+
+        embed.set_author(name=util.CONFIG_DATA['author_tag'])
+        embed.set_footer(text=util.CONFIG_DATA['footer_text'], icon_url=util.CONFIG_DATA['owner_pfp'])
 
         await ctx.send(embed=embed)
 
