@@ -1,4 +1,3 @@
-
 import discord
 from discord.ext import commands
 import requests
@@ -83,10 +82,16 @@ class Weather(commands.Cog):
 
         weather_reply = requests.get(f"https://api.openweathermap.org/data/2.5/forecast?lat={latlong[0]}&lon={latlong[1]}&appid={os.environ.get('WEATHER_API_KEY')}")
         nameData = (weather_reply.json()["city"]["name"], weather_reply.json()["city"]["country"])
-        weather_data = weather_reply.json()["list"][0:4]
+        weather_data = weather_reply.json()["list"][0:8]
 
         print(weather_data)
         embed : discord.Embed = discord.Embed(title=f"Weather for {nameData[0]}, {nameData[1]}")
+
+        for data in weather_data:
+            embed.add_field(name=data['dt_txt'], value=f"""**Weather:** {data['weather'][0]['main']}
+                            **Temperature:** {self.kelvin_to_celcius(data['main']['temp'])} °C
+                            **Lo-Hi:** {self.kelvin_to_celcius(data['main']['temp_min'])} - {self.kelvin_to_celcius(data['main']['temp_max'])} °C
+                            **Feels:** {self.kelvin_to_celcius(data['main']['feels_like'])} °C""")
 
         embed.set_author(name=util.CONFIG_DATA['author_tag'])
         embed.set_footer(text=util.CONFIG_DATA['footer_text'], icon_url=util.CONFIG_DATA['owner_pfp'])
