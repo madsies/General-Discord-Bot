@@ -28,6 +28,11 @@ class Weather(commands.Cog):
         idx = round(deg / 45) % 8
         return directions[idx]
     
+    """
+        Checks if user location is valid
+        - In invalid, quit and send error message
+    """
+    
     async def verify_location(self, city: str, country : str, ctx):
         if (city == None): await ctx.reply("This command requires a city/town name.")
         if (country == None): country = ""
@@ -50,6 +55,14 @@ class Weather(commands.Cog):
     @commands.hybrid_group(name="weather", description="Command for weather")
     async def weather(self, ctx):
         await ctx.send("Please specify more..")
+
+
+    """
+        Obtains Current weather in an area
+        - Icon is fetched from API, based on current
+        - User can specify country code as 2nd arg if needed
+        - 1st arg Town/City name, mandatory
+    """
 
     @weather.command("current", description="Get the current weather")
     async def current_weather(self, ctx, *, city : str, country : str = None):
@@ -75,6 +88,14 @@ class Weather(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    """
+        Obtains (3)Hourly weather data from location
+        - API limited on frequency
+        - Sends discord embed to user with fields for each slot
+        - Sends next 8 increments (3*8 = 24 = 1 day)
+        - Icon is from most common weather
+    """
+
     @weather.command("hourly", description="Get the 3 hourly weather forecast")
     async def hourly_weather(self, ctx, *, city:str, country:str = None):
         latlong = await self.verify_location(city, country, ctx)
@@ -84,20 +105,23 @@ class Weather(commands.Cog):
         nameData = (weather_reply.json()["city"]["name"], weather_reply.json()["city"]["country"])
         weather_data = weather_reply.json()["list"][0:8]
 
-        print(weather_data)
         embed : discord.Embed = discord.Embed(title=f"Weather for {nameData[0]}, {nameData[1]}")
+
+        icons : list = []
+        for icon in weather_data: icons.append(icon['weather'][0]["icon"])
+
+        common : str = max(set(icons), key=icons.count)
+        embed.set_thumbnail(url=f"https://openweathermap.org/img/wn/{common}@2x.png")
 
         for data in weather_data:
             embed.add_field(name=data['dt_txt'], value=f"""**Weather:** {data['weather'][0]['main']}
-                            **Temperature:** {self.kelvin_to_celcius(data['main']['temp'])} °C
+                            **Temp:** {self.kelvin_to_celcius(data['main']['temp'])} °C
                             **Lo-Hi:** {self.kelvin_to_celcius(data['main']['temp_min'])} - {self.kelvin_to_celcius(data['main']['temp_max'])} °C
-                            **Feels:** {self.kelvin_to_celcius(data['main']['feels_like'])} °C""")
+                            **Feels:** {self.kelvin_to_celcius(data['main']['feels_like'])} °C""")    
 
         embed.set_author(name=util.CONFIG_DATA['author_tag'])
         embed.set_footer(text=util.CONFIG_DATA['footer_text'], icon_url=util.CONFIG_DATA['owner_pfp'])
         await ctx.send(embed=embed)
-
-
 
 
 
