@@ -28,11 +28,15 @@ class Weather(commands.Cog):
         idx = round(deg / 45) % 8
         return directions[idx]
     
+
+    """ Short name for directions, concise """
+    
     def s_get_dir(self, deg : int):
         directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
         idx = round(deg / 45) % 8
         return directions[idx]
     
+
     """
         Transforms Temp (Kelvin) into a colour (gradient from blue->green->red)
         Key Points:
@@ -51,9 +55,9 @@ class Weather(commands.Cog):
             (-30, (255, 255, 255)),  # White
             (0,   (33, 150, 243)),   # Blue
             (15,  (76, 175, 80)),    # Green
-            (30,  (244, 67, 54)),    # Red
+            (30,  (244, 67, 54)),   # Red
             (40, (160, 15, 10)),   # Middle point
-            (50,  (0, 0, 0)),        # Black
+            (50,  (0, 0, 0)),    # Black
         ]
 
         for i in range(len(points) - 1):
@@ -112,9 +116,10 @@ class Weather(commands.Cog):
         weather_reply = requests.get(f"https://api.openweathermap.org/data/2.5/weather?lat={latlong[0]}&lon={latlong[1]}&appid={os.environ.get('WEATHER_API_KEY')}")
         weather_data = weather_reply.json()
         nameData = (weather_data["name"], weather_data["sys"]["country"])
-        print(weather_reply.json())
 
-        embed : discord.Embed = discord.Embed(title=f"Weather for {nameData[0]}, {nameData[1]}")
+        colour : int = self.get_temp_colour(weather_data['main']['temp'])
+
+        embed : discord.Embed = discord.Embed(title=f"Weather for {nameData[0]}, {nameData[1]}", colour=colour)
         embed.set_thumbnail(url=f"https://openweathermap.org/img/wn/{weather_data['weather'][0]['icon']}@2x.png")
         embed.add_field(name=weather_data["weather"][0]["main"], value=weather_data["weather"][0]["description"], inline=False)
         embed.add_field(name="Current Temperature", value=f"Actual: {self.kelvin_to_celcius(weather_data['main']['temp'])} °C\n Feels Like: {self.kelvin_to_celcius(weather_data['main']['feels_like'])} °C")
@@ -156,13 +161,11 @@ class Weather(commands.Cog):
 
         embed : discord.Embed = discord.Embed(title=f"Weather for {nameData[0]}, {nameData[1]}", colour=self.get_temp_colour(temp))
 
-       
-
         common : str = max(set(icons), key=icons.count)
         embed.set_thumbnail(url=f"https://openweathermap.org/img/wn/{common}@2x.png")
 
         for data in weather_data:
-            embed.add_field(name=data['dt_txt'], value=f"""**Weather:** {data['weather'][0]['main']}
+            embed.add_field(name=f"<t:{data['dt']}:f>", value=f"""**Weather:** {data['weather'][0]['main']}
                             **Temp:** {self.kelvin_to_celcius(data['main']['temp'])} °C
                             **Feels:** {self.kelvin_to_celcius(data['main']['feels_like'])} °C
                             **Wind:** {data['wind']['speed']} m/s | {data['wind']['deg']}° ({self.s_get_dir(data['wind']['deg'])})""")    
@@ -172,8 +175,6 @@ class Weather(commands.Cog):
         embed.set_author(name=util.CONFIG_DATA['author_tag'])
         embed.set_footer(text=util.CONFIG_DATA['footer_text'], icon_url=util.CONFIG_DATA['owner_pfp'])
         await ctx.send(embed=embed)
-
-
 
 
 async def setup(bot: commands.Bot) -> None:

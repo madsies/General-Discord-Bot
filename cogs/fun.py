@@ -8,6 +8,7 @@ import requests
 
     Fun Commands
     - Poke: Good example of grouped commands used in hybrid
+    - Dog: Grabs random pictures of dogs from an open API
 
 """
 

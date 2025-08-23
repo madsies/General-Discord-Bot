@@ -9,6 +9,11 @@ load_dotenv()
 with open(Path(__file__).parent / "resources/data.json", "r", encoding="utf-8") as f:
     CONFIG_DATA = json.load(f)
 
+"""
+    Handles interaction with MySQL database
+    Simplifies the boilerplate in other functions
+"""
+
 class MySQLDatabase():
     def __init__(self, host_name : str, user_name : str, user_password : str):
         self._db_name : str = "YukariDatabase"
