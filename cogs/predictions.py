@@ -183,7 +183,7 @@ class Predictions(commands.Cog):
         await ctx.author.send(f"Select the correct prediction for:\n**{question}**", view = view_dm)
 
         # Periodic checks
-        while (not pred_data.is_cancelled()) and (not pred_data.is_completed):
+        while (not pred_data.is_cancelled()) and (not pred_data.is_completed()):
             await asyncio.sleep(1)
 
         if (pred_data.is_completed):
