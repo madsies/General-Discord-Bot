@@ -3,19 +3,43 @@ from discord.ext import commands
 import util
 import asyncio
 
+class PredictionData():
+    def __init__(self, question : str, duration : int,  options : list, host : int ):
+        self.data : dict = {}
+        self.pred = question
+        self.duration = duration
+        self.options = options
+        self.host = host
+        self.cancelled = False
+    
+    def add_user(self,id:int, pred:str):
+        self.data[id] = pred
+
+    def has_user(self, id:int):
+        return id in self.data
+    
+    def cancel(self):
+        # Pay back all members
+        self.cancelled = True
+
+    def is_cancelled(self):
+        return self.cancelled
+
+
+
 class PredsView(discord.ui.View):
-    def __init__(self, values : list):
-        super().__init__()
+    def __init__(self, data:PredictionData):
+        super().__init__(timeout=data.duration)
         self.prediction_dropdown : discord.ui.Select = None
         self.prediction_value : discord.ui.TextInput = None
         self.prediction_confirm : discord.ui.Button = None
-        self.selected_pred : dict = {}
-        self.predictions : dict = {}
-        self.setup_buttons(values)
+        self.predictions = data
+        self.setup_button(self.predictions.options)
         
     def setup_buttons(self, vals : list):
         options = self.convert_to_options(vals)
         self.prediction_dropdown = discord.ui.Select(placeholder="Select an option", min_values=1, max_values=1, options=options)
+        self.prediction_dropdown.callback = self.on_prediction_selection
         self.add_item(self.prediction_dropdown)
 
         self.prediction_confirm = discord.ui.Button(label="Predict", style=discord.ButtonStyle.blurple)
@@ -39,12 +63,17 @@ class PredsView(discord.ui.View):
             i = i+1
         return converted
 
+    async def on_prediction_selection(self, interaction:discord.Interaction):
+        await interaction.response.defer()
 
     async def on_prediction_button_press(self, interaction : discord.Interaction):
-        if (interaction.user.id in self.predictions.keys()): await interaction.command_failed("You have already predicted"); return
+        if (self.predictions.has_user(interaction.user.id)): await interaction.response.send_message("You have already predicted", silent=True, delete_after=10); return
         #if (isnumeric(self.prediction_value.))
-        self.predictions[interaction.user.id] = self.prediction_dropdown.values[0]
+        self.predictions.add_user(interaction.user.id, self.prediction_dropdown.values[0])
         print(f"Predicted {self.prediction_dropdown.values[0]}")
+        await interaction.user.send(f"You have predicted '**{self.prediction_dropdown.values[0]}**'.")
+        await interaction.response.defer()
+
 
 
 class Predictions(commands.Cog):
@@ -69,21 +98,29 @@ class Predictions(commands.Cog):
         if (duration <= 0): await ctx.send("Invalid Duration"); return
         if (question == ""): await ctx.send("Please add a question"); return
 
+        
+
         embed = discord.Embed(title=f"Prediction: {question}", colour=int(util.CONFIG_DATA['embed_neuteral_color'], 16))
 
         options : list = [option1, option2]
         if (option3 != None): options.append(option3)
         if (option4 != None): options.append(option4)
 
-        view = PredsView(options)
+        pred_data = PredictionData(question, duration, options, ctx.author.id)
 
-        await ctx.send(embed=embed, view=PredsView(options))
+        await ctx.send(embed=embed, view=PredsView(pred_data))
+
+        # Send DM to creator, dropdown to select the correct response.
 
         await asyncio.sleep(duration)
 
         # Locked after this
 
-        await ctx.send("over")
+        await ctx.edit
+
+        # Periodic checks
+        while not pred_data.is_cancelled():
+            await asyncio.sleep(5)
 
         # Wait for result, after x with no response or cancel, refund users.
 
