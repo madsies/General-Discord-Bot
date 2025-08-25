@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import util
 import asyncio
+import time
 
 class PredictionData():
     def __init__(self, question : str, duration : int,  options : list, host : int ):
@@ -141,14 +142,12 @@ class Predictions(commands.Cog):
         self.bot = bot
         self._last_member = None
         
-
     """
     
         User predictions:
 
 
     """
-
     @commands.hybrid_group(name="prediction", description="Prediction Commands")
     async def prediction(self, ctx):
         await ctx.send("Please specify more..")
@@ -158,7 +157,7 @@ class Predictions(commands.Cog):
         if (duration <= 0): await ctx.send("Invalid Duration"); return
         if (question == ""): await ctx.send("Please add a question"); return
 
-        embed = discord.Embed(title=f"Prediction: {question}", colour=int(util.CONFIG_DATA['embed_neuteral_color'], 16))
+        
 
         options : list = [option1, option2]
         if (option3 != None): options.append(option3)
@@ -166,6 +165,17 @@ class Predictions(commands.Cog):
 
         pred_data = PredictionData(question, duration, options, ctx.author.id)
         view = PredsView(pred_data)
+
+        targetTime = int(time.time()) + duration
+        choices = "**Choices:**\n"
+        emojis = ['1️⃣','2️⃣','3️⃣','4️⃣']
+        i = 0
+        for choice in pred_data.options:
+            choices = choices + emojis[i]+" "+choice+"\n"
+            i = i+1
+
+        embed = discord.Embed(title=f"Prediction: {question}", colour=int(util.CONFIG_DATA['embed_neuteral_color'], 16), 
+                              description=f"Closing in <t:{targetTime}:R>\n\n"+choices)
 
         message = await ctx.send(embed=embed, view=view)
 
