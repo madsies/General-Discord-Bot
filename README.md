@@ -4,7 +4,8 @@
 
 - Uses MySQL database to handle persistent data storage
 - Uses two RESTful APIs to grab data to share to users.
-- Heavy use of discord.Embed and discord.ui.View for a cleaner user experie3nce
+- Heavy use of discord.Embed and discord.ui.View for a cleaner user experience
+- Key hidden data is stored privately, away from github in .env file
 
 ## Commands
 
